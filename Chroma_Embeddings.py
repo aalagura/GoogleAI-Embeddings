@@ -33,11 +33,11 @@ class GeminiEmbeddingFunction(EmbeddingFunction):
                                 title=title)["embedding"]
      
 def create_chroma_db(documents, name):
-  chroma_client = chromadb.Client()
-  db = chroma_client.create_collection(name=name, embedding_function=GeminiEmbeddingFunction(),get_or_create=True )
+  chroma_client = chromadb.PersistentClient(path="ChromaStorage")
+  db = chroma_client.get_or_create_collection(name=name, embedding_function=GeminiEmbeddingFunction() )
   
   for i, d in enumerate(documents):
-    db.add(
+    db.upsert(
       documents=d,
       ids=str(i)
     )
